@@ -78,6 +78,125 @@ const HEROES = [
     collectible: "gem",
     collectibleName: "gems",
   },
+  {
+    id: "spin",
+    name: "Spin the Tornado",
+    tagline: "A swirling spidey-verse hero with a spin move!",
+    style: "spin",
+    colors: {
+      body: "#9333ea",         // purple spiral
+      belly: "#fbbf24",        // yellow accents
+      accent: "#ec4899",       // pink highlights
+      badge: "#fff",
+    },
+    speed: 4.7,
+    jumpPower: 13,
+    doubleJump: false,
+    collectible: "spiral",
+    collectibleName: "spirals",
+  },
+  {
+    id: "ghostie",
+    name: "Ghostie Spidey",
+    tagline: "A friendly ghost from the web!",
+    style: "ghostie",
+    colors: {
+      body: "#e0e7ff",         // ghostly white
+      belly: "#818cf8",        // indigo glow
+      accent: "#a78bfa",       // purple outline
+      badge: "#6366f1",
+    },
+    speed: 3.8,                // slower, floatier
+    jumpPower: 14,             // floatier jump
+    doubleJump: false,
+    collectible: "spirit",
+    collectibleName: "spirits",
+  },
+  {
+    id: "rider",
+    name: "Rider the Wolf",
+    tagline: "A brave wolf rider from the patrol!",
+    style: "rider",
+    colors: {
+      body: "#92400e",         // brown fur
+      belly: "#fef3c7",        // cream
+      accent: "#dc2626",       // red armor
+      badge: "#fbbf24",        // gold trim
+    },
+    speed: 4.5,
+    jumpPower: 12.8,
+    doubleJump: false,
+    collectible: "shield",
+    collectibleName: "shields",
+  },
+  {
+    id: "merlin",
+    name: "Merlin the Mage",
+    tagline: "An ancient wizard with mystical power!",
+    style: "merlin",
+    colors: {
+      body: "#6b7280",         // grey robe
+      belly: "#d1d5db",        // silver stars
+      accent: "#1f2937",       // dark hat
+      badge: "#fbbf24",        // golden staff
+    },
+    speed: 3.9,
+    jumpPower: 14.5,           // very high jump
+    doubleJump: false,
+    collectible: "crystal",
+    collectibleName: "crystals",
+  },
+  {
+    id: "amy",
+    name: "Amy the Pink Hedgehog",
+    tagline: "Fast and feisty with a hammer!",
+    style: "amy",
+    colors: {
+      body: "#ec4899",         // bright pink
+      belly: "#fbcfe8",        // light pink
+      accent: "#be185d",       // dark pink shoes
+      badge: "#7c3aed",        // hammer head
+    },
+    speed: 5.1,                // very fast
+    jumpPower: 12,
+    doubleJump: false,
+    collectible: "heart",
+    collectibleName: "hearts",
+  },
+  {
+    id: "tails",
+    name: "Tails the Two-Tailed Fox",
+    tagline: "Twin tails mean double jumps!",
+    style: "tails",
+    colors: {
+      body: "#f59e0b",         // orange fur
+      belly: "#fef3c7",        // cream
+      accent: "#ffffff",       // white tails
+      badge: "#dc2626",        // red shoes
+    },
+    speed: 4.8,
+    jumpPower: 11.5,
+    doubleJump: true,          // those tails help him fly!
+    collectible: "ring",
+    collectibleName: "rings",
+  },
+  {
+    id: "knuckles",
+    name: "Knuckles the Echidna",
+    tagline: "Strong fists and mighty jumps!",
+    style: "knuckles",
+    colors: {
+      body: "#dc2626",         // red
+      belly: "#fca5a5",        // light red
+      accent: "#7c2d12",       // brown spikes
+      badge: "#fbbf24",        // golden knuckles
+    },
+    speed: 4.1,                // slower but mighty
+    jumpPower: 14.8,           // second-highest jump
+    doubleJump: false,
+    collectible: "emerald",
+    collectibleName: "emeralds",
+  },
 ];
 
 // ---------- GAME FEEL ----------

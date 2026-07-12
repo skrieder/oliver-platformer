@@ -14,10 +14,17 @@ at the link above — or download this folder and **double-click `index.html`**.
 ## The heroes (all original, inspired by favorites)
 | Hero | Inspired by | Special |
 |------|-------------|---------|
-| Rusty the Rescue Pup | rescue-puppy shows | Well-rounded and brave |
-| Webby the Spider Kid | friendly spider heroes | **Double jump** (press jump again in the air!) |
-| Zoom the Hedgehog | speedy blue heroes | **Fastest runner**, spin-ball jumps, collects tiny hedgehogs 🦔 |
-| Art the Apprentice | young-wizard tales | Highest jump, holds his sword up |
+| Rusty the Rescue Pup | rescue-puppy shows | Well-rounded and brave, collects bones 🦴 |
+| Webby the Spider Kid | friendly spider heroes | **Double jump** (press jump again in the air!), collects stars ⭐ |
+| Zoom the Hedgehog | speedy blue heroes | **Fastest runner**, spin-ball jumps, collects hedgehogs 🦔 |
+| Art the Apprentice | young-wizard tales | **Highest jump**, holds magic sword, collects gems 💎 |
+| Spin the Tornado | spidey-verse | Fast spinner with spiral aura, collects spirals 🌀 |
+| Ghostie Spidey | spidey-verse | Floatier & slower, translucent ghost look, collects spirits 👻 |
+| Rider the Wolf | paw patrol | Brave wolf rider with armor, collects shields 🛡️ |
+| Merlin the Mage | The Sword in the Stone | **Very high jump**, mystic wizard with staff, collects crystals 🔮 |
+| Amy the Pink Hedgehog | sonic-universe | Fast with hammer swing, collects hearts ❤️ |
+| Tails the Two-Tailed Fox | sonic-universe | **Double jump** (flying tails!), super-fast, collects rings 💍 |
+| Knuckles the Echidna | sonic-universe | **Strong jumper**, red echidna, collects emeralds 💚 |
 
 ## Changing the game (the fun part!)
 Almost everything lives in **`config.js`**:

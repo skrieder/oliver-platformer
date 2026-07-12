@@ -189,7 +189,7 @@ function updateHud() {
 }
 
 function itemEmoji() {
-  return { bone: "🦴", star: "⭐", gem: "💎", hedgehog: "🦔" }[hero.collectible] || "⭐";
+  return { bone: "🦴", star: "⭐", gem: "💎", hedgehog: "🦔", spiral: "🌀", spirit: "👻", shield: "🛡️", crystal: "🔮", heart: "❤️", ring: "💍", emerald: "💚" }[hero.collectible] || "⭐";
 }
 
 // ---------- Physics ----------
@@ -766,6 +766,253 @@ function drawHero(c, style, colors, opts) {
   }
 
   c.restore();
+
+  if (style === "spin") {
+    // purple tornado spiral
+    c.fillStyle = colors.body;
+    c.beginPath(); c.arc(0, 0, 16, 0, Math.PI * 2); c.fill();
+    // swirling spiral pattern
+    c.strokeStyle = colors.belly;
+    c.lineWidth = 2;
+    for (let i = 0; i < 3; i++) {
+      c.beginPath();
+      c.arc(0, 0, 8 + i * 4, (frame / 30 + i * Math.PI * 0.6) % (Math.PI * 2), (frame / 30 + i * Math.PI * 0.6) % (Math.PI * 2) + Math.PI * 1.2);
+      c.stroke();
+    }
+    // swirl eyes
+    c.fillStyle = colors.accent;
+    c.beginPath(); c.arc(-5, -8, 2, 0, Math.PI * 2); c.fill();
+    c.beginPath(); c.arc(5, -8, 2, 0, Math.PI * 2); c.fill();
+    // spinning feet
+    const lr = jumping ? 0 : Math.sin(run * 3) * 8;
+    c.fillStyle = colors.belly;
+    c.fillRect(-8 + lr, 14, 6, 8);
+    c.fillRect(2 - lr, 14, 6, 8);
+  }
+
+  if (style === "ghostie") {
+    // ghostly white sheet with faint glow
+    c.globalAlpha = 0.85;
+    c.fillStyle = colors.body;
+    c.beginPath();
+    c.moveTo(-12, -10);
+    c.lineTo(12, -10);
+    c.lineTo(12, 18);
+    c.lineTo(10, 20);
+    c.lineTo(-10, 20);
+    c.lineTo(-12, 18);
+    c.closePath();
+    c.fill();
+    c.globalAlpha = 1;
+    // big spooky eyes
+    c.fillStyle = colors.belly;
+    c.beginPath(); c.ellipse(-6, 0, 4, 6, 0, 0, Math.PI * 2); c.fill();
+    c.beginPath(); c.ellipse(6, 0, 4, 6, 0, 0, Math.PI * 2); c.fill();
+    c.fillStyle = "#222";
+    c.beginPath(); c.arc(-5, 0, 2, 0, Math.PI * 2); c.fill();
+    c.beginPath(); c.arc(7, 0, 2, 0, Math.PI * 2); c.fill();
+    // wobbly mouth
+    c.strokeStyle = "#222";
+    c.lineWidth = 1.5;
+    c.beginPath();
+    c.arc(0, 7, 4, 0.2, Math.PI - 0.2);
+    c.stroke();
+    // floating bob
+    c.globalAlpha = 0.4;
+    c.fillStyle = colors.belly;
+    for (let i = 0; i < 3; i++) {
+      c.beginPath();
+      c.arc(-8 + i * 8, -18 + Math.sin(frame / 15 + i) * 4, 1.5, 0, Math.PI * 2);
+      c.fill();
+    }
+    c.globalAlpha = 1;
+  }
+
+  if (style === "rider") {
+    // wolf/pup in saddle
+    c.fillStyle = colors.body;
+    c.beginPath(); c.arc(0, 6, 13, 0, Math.PI * 2); c.fill();
+    // ears (pointed)
+    c.beginPath(); c.moveTo(-6, -6); c.lineTo(-10, -16); c.lineTo(-2, -8); c.closePath(); c.fill();
+    c.beginPath(); c.moveTo(6, -6); c.lineTo(10, -16); c.lineTo(2, -8); c.closePath(); c.fill();
+    // face & snout
+    c.fillStyle = colors.belly;
+    c.beginPath(); c.ellipse(0, -2, 8, 7, 0, 0, Math.PI * 2); c.fill();
+    c.fillStyle = "#222";
+    c.beginPath(); c.arc(-4, -3, 2, 0, Math.PI * 2); c.fill();
+    c.beginPath(); c.arc(4, -3, 2, 0, Math.PI * 2); c.fill();
+    c.beginPath(); c.arc(0, 2, 1.5, 0, Math.PI * 2); c.fill();
+    // armor/saddle
+    c.fillStyle = colors.accent;
+    c.fillRect(-10, 8, 20, 6);
+    c.fillStyle = colors.badge;
+    c.fillRect(-8, 9, 4, 4);
+    c.fillRect(4, 9, 4, 4);
+    // running legs
+    const lr = jumping ? 4 : Math.sin(run * 2) * 6;
+    c.fillStyle = colors.body;
+    c.fillRect(-9 + lr, 14, 6, 8);
+    c.fillRect(3 - lr, 6, 6, 8);
+  }
+
+  if (style === "merlin") {
+    // old wizard robe
+    c.fillStyle = colors.body;
+    c.beginPath();
+    c.moveTo(0, -10);
+    c.lineTo(14, 20);
+    c.lineTo(-14, 20);
+    c.closePath();
+    c.fill();
+    // mystical stars
+    c.fillStyle = colors.belly;
+    c.font = "7px serif";
+    c.textAlign = "center";
+    c.fillText("★", -5, 6);
+    c.fillText("★", 5, 12);
+    c.fillText("✦", 0, 18);
+    // old wizard head (greyish)
+    c.fillStyle = "#c9a876";
+    c.beginPath(); c.arc(0, -14, 9, 0, Math.PI * 2); c.fill();
+    // wise eyes
+    c.fillStyle = "#222";
+    c.beginPath(); c.arc(3, -15, 1.5, 0, Math.PI * 2); c.fill();
+    c.beginPath(); c.arc(-3, -15, 1.5, 0, Math.PI * 2); c.fill();
+    // beard lines
+    c.strokeStyle = "#8b7355";
+    c.lineWidth = 1;
+    c.beginPath(); c.moveTo(-4, -8); c.lineTo(-6, -2); c.stroke();
+    c.beginPath(); c.moveTo(4, -8); c.lineTo(6, -2); c.stroke();
+    // tall pointed hat
+    c.fillStyle = colors.accent;
+    c.beginPath();
+    c.moveTo(-1, -28);
+    c.lineTo(10, -14);
+    c.lineTo(-12, -14);
+    c.closePath();
+    c.fill();
+    c.beginPath(); c.roundRect(-12, -16, 24, 4, 2); c.fill();
+    // staff (golden)
+    c.save();
+    c.translate(15, jumping ? -16 : 0);
+    c.rotate(jumping ? -0.8 : 0.3);
+    c.fillStyle = colors.badge;
+    c.beginPath(); c.roundRect(-1.5, -18, 3, 20, 1.5); c.fill();
+    c.beginPath(); c.arc(0, -20, 4, 0, Math.PI * 2); c.fill();
+    c.restore();
+  }
+
+  if (style === "amy") {
+    // hot pink hedgehog body
+    c.fillStyle = colors.body;
+    // spikes (swept-back like Sonic's but shorter)
+    for (const [sx, sy] of [[-6, -16], [-10, -8], [-12, 0]]) {
+      c.beginPath();
+      c.moveTo(sx, sy);
+      c.lineTo(sx - 10, sy + 2);
+      c.lineTo(sx + 2, sy + 6);
+      c.closePath();
+      c.fill();
+    }
+    // body
+    c.beginPath(); c.ellipse(0, 0, 14, 16, 0, 0, Math.PI * 2); c.fill();
+    // pink tummy
+    c.fillStyle = colors.belly;
+    c.beginPath(); c.ellipse(4, 6, 8, 9, 0, 0, Math.PI * 2); c.fill();
+    // face
+    c.beginPath(); c.ellipse(7, -8, 7, 6, 0, 0, Math.PI * 2); c.fill();
+    // big eyes with eyelashes
+    c.fillStyle = "#fff";
+    c.beginPath(); c.ellipse(8, -9, 4, 5.5, 0, 0, Math.PI * 2); c.fill();
+    c.fillStyle = "#222";
+    c.beginPath(); c.arc(10, -9, 2.5, 0, Math.PI * 2); c.fill();
+    c.beginPath(); c.arc(15, -4, 1.8, 0, Math.PI * 2); c.fill();
+    // hammer in hand
+    c.save();
+    c.translate(jumping ? 12 : 14, jumping ? -10 : -4);
+    c.rotate(jumping ? -0.6 : 0.4);
+    c.fillStyle = colors.accent;
+    c.beginPath(); c.roundRect(-2, -14, 4, 14, 2); c.fill();
+    c.fillStyle = colors.badge;
+    c.fillRect(-6, -16, 12, 4);
+    c.restore();
+    // pink shoes
+    c.fillStyle = colors.accent;
+    const lr = jumping ? 0 : Math.sin(run * 2) * 6;
+    c.beginPath(); c.roundRect(-9 + lr, 15, 12, 7, 3); c.fill();
+    c.beginPath(); c.roundRect(-1 - lr, 15, 12, 7, 3); c.fill();
+  }
+
+  if (style === "tails") {
+    // orange fox
+    c.fillStyle = colors.body;
+    c.beginPath(); c.ellipse(0, 0, 14, 16, 0, 0, Math.PI * 2); c.fill();
+    // cream tummy
+    c.fillStyle = colors.belly;
+    c.beginPath(); c.ellipse(4, 6, 8, 10, 0, 0, Math.PI * 2); c.fill();
+    // face
+    c.beginPath(); c.ellipse(7, -8, 7, 6, 0, 0, Math.PI * 2); c.fill();
+    c.fillStyle = "#fff";
+    c.beginPath(); c.ellipse(8, -9, 4, 5, 0, 0, Math.PI * 2); c.fill();
+    c.fillStyle = "#222";
+    c.beginPath(); c.arc(10, -9, 2, 0, Math.PI * 2); c.fill();
+    // TWO TAILS! flowing behind
+    c.strokeStyle = colors.accent;
+    c.lineWidth = 5;
+    c.lineCap = "round";
+    const t1 = Math.sin(run) * 8;
+    const t2 = Math.cos(run * 1.3) * 8;
+    c.beginPath();
+    c.moveTo(-12, 0);
+    c.quadraticCurveTo(-22, 4 + t1, -24, 12 + t1);
+    c.stroke();
+    c.beginPath();
+    c.moveTo(-12, 4);
+    c.quadraticCurveTo(-22, 8 + t2, -24, 16 + t2);
+    c.stroke();
+    // red shoes
+    c.fillStyle = colors.accent;
+    const lr = jumping ? 0 : Math.sin(run * 2) * 5;
+    c.beginPath(); c.roundRect(-9 + lr, 15, 11, 7, 3); c.fill();
+    c.beginPath(); c.roundRect(-2 - lr, 15, 11, 7, 3); c.fill();
+  }
+
+  if (style === "knuckles") {
+    // big red echidna
+    c.fillStyle = colors.body;
+    c.beginPath(); c.arc(0, 4, 15, 0, Math.PI * 2); c.fill();
+    // light red belly
+    c.fillStyle = colors.belly;
+    c.beginPath(); c.ellipse(0, 6, 10, 10, 0, 0, Math.PI * 2); c.fill();
+    // spiky quills (brown/dark)
+    c.fillStyle = colors.accent;
+    for (const [sx, sy] of [[-8, -14], [0, -18], [8, -14]]) {
+      c.beginPath();
+      c.moveTo(sx, sy);
+      c.lineTo(sx - 3, sy - 8);
+      c.lineTo(sx + 3, sy - 8);
+      c.closePath();
+      c.fill();
+    }
+    // head
+    c.fillStyle = colors.body;
+    c.beginPath(); c.arc(0, -8, 10, 0, Math.PI * 2); c.fill();
+    // eyes
+    c.fillStyle = "#fff";
+    c.beginPath(); c.arc(-4, -10, 2.5, 0, Math.PI * 2); c.fill();
+    c.beginPath(); c.arc(4, -10, 2.5, 0, Math.PI * 2); c.fill();
+    c.fillStyle = "#222";
+    c.beginPath(); c.arc(-4, -10, 1.2, 0, Math.PI * 2); c.fill();
+    c.beginPath(); c.arc(4, -10, 1.2, 0, Math.PI * 2); c.fill();
+    // big knuckle gloves (golden)
+    c.fillStyle = colors.badge;
+    const lr = jumping ? 2 : Math.sin(run * 2) * 4;
+    c.fillRect(-11 + lr, 14, 8, 8);
+    c.fillRect(3 - lr, 14, 8, 8);
+    c.fillStyle = colors.body;
+    c.fillRect(-10 + lr, 16, 6, 4);
+    c.fillRect(4 - lr, 16, 6, 4);
+  }
 }
 
 function drawPlayer() {
