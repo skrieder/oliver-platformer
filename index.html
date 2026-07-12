@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Oliver's Hero Adventure</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="game-wrap">
+    <!-- Character select screen -->
+    <div id="select-screen" class="screen">
+      <h1 class="title">Oliver's Hero Adventure</h1>
+      <p class="subtitle">Pick your hero!</p>
+      <div id="hero-cards"></div>
+    </div>
+
+    <!-- Level complete screen -->
+    <div id="win-screen" class="screen hidden">
+      <h1 class="title" id="win-title">YOU DID IT!</h1>
+      <div id="win-stars"></div>
+      <div class="btn-row">
+        <button class="big-btn" id="next-btn">Next Level ➡️</button>
+        <button class="big-btn alt" id="heroes-btn">Change Hero</button>
+      </div>
+    </div>
+
+    <!-- The game itself -->
+    <canvas id="game" width="960" height="540"></canvas>
+
+    <!-- HUD -->
+    <div id="hud" class="hidden">
+      <span id="hud-level"></span>
+      <span id="hud-score"></span>
+    </div>
+
+    <!-- Touch controls (show up on tablets/phones) -->
+    <div id="touch-controls" class="hidden">
+      <div class="tc-left">
+        <button class="tc-btn" id="tc-left">⬅️</button>
+        <button class="tc-btn" id="tc-right">➡️</button>
+      </div>
+      <div class="tc-right">
+        <button class="tc-btn" id="tc-jump">⬆️</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
