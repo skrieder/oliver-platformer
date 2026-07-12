@@ -1,7 +1,9 @@
 # Oliver's Hero Adventure 🎮
 
-A simple, friendly platform game made for Oliver. No installs needed —
-**just double-click `index.html`** and it opens in the browser.
+### ▶️ [Play it now!](https://skrieder.github.io/oliver-platformer/)
+
+A simple, friendly platform game made for Oliver. Play right in your browser
+at the link above — or download this folder and **double-click `index.html`**.
 
 ## How to play
 - **Arrow keys** (or WASD) to run, **Up / Space** to jump
