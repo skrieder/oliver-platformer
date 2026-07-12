@@ -71,11 +71,22 @@ const FEEL = {
   respawnFlash: 60,       // frames of sparkle after respawning
 };
 
+// ---------- POWERUP ----------
+// Grab a ⚡ in a level and you play BETTER for a little while:
+// run faster, jump higher, and glow with rainbow sparkles!
+// While powered up, treats turn into SUPER DIAMONDS 💎 — extra special!
+const POWERUP = {
+  duration: 600,          // how long it lasts, in frames (60 = 1 second)
+  speedBoost: 1.5,        // 1.5 = 50% faster running
+  jumpBoost: 1.15,        // 1.15 = 15% higher jumps
+};
+
 // ---------- LEVELS ----------
 // Levels are drawn with letters! Each letter is one block:
 //   #  = grass block          =  = floating platform
 //   o  = collectible          F  = flag (the goal!)
 //   P  = where the hero starts
+//   !  = powerup ⚡ (run faster + jump higher for a while!)
 //   ^  = super spring (bounces you high)
 //   T  = friendly turtle (bounce on top, he doesn't mind)
 //   (space) = air              (gaps in the floor = water you respawn from, no harm!)
@@ -94,7 +105,7 @@ const LEVELS = [
       "                 ===                        o o o           ",
       "         o                    o            =====            ",
       "        ===        o         ===                        F   ",
-      "  P            o  ===   o           ^                  ===  ",
+      "  P     !      o  ===   o           ^                  ===  ",
       "############# ############### ###### ######################",
       "############# ############### ###### ######################",
     ],
@@ -109,7 +120,7 @@ const LEVELS = [
       "                =====                        ===                  ",
       "        o                   o o        o            o o       F  ",
       "       ===       T         =====      ===          =====     ====",
-      "  P                                                               ",
+      "  P                             !                                 ",
       "#########  ########## ############ ######## ######################",
       "#########  ########## ############ ######## ######################",
     ],
@@ -124,7 +135,7 @@ const LEVELS = [
       "                   ===               =====                            ",
       "          o                  o                   o o o          F     ",
       "         ===        T       ===       ^         ======         ====   ",
-      "  P              o                                                    ",
+      "  P              o                 !                                  ",
       "##########  ########### ########  ######## ###########################",
       "##########  ########### ########  ######## ###########################",
     ],

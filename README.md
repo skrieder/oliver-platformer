@@ -24,8 +24,11 @@ Almost everything lives in **`config.js`**:
 - **Heroes** — names, colors, speed, jump power, double-jump, what they collect.
   Copy a block to add a new hero.
 - **Levels** — drawn with letters, one letter per block:
-  `#` ground · `=` platform · `o` treat · `^` spring · `T` friendly turtle ·
-  `F` flag · `P` start. Add more rows of text = new level!
+  `#` ground · `=` platform · `o` treat · `!` powerup ⚡ · `^` spring ·
+  `T` friendly turtle · `F` flag · `P` start. Add more rows of text = new level!
+- **Powerups** — grab a ⚡ to run faster and jump higher for a while
+  (rainbow glow!). While powered up, treats become **SUPER DIAMONDS** 💎.
+  Tune it all in `POWERUP` (duration, speed boost, jump boost).
 - **Game feel** — `FEEL.gravity` lower = floatier, `coyoteTime` higher = more forgiving jumps.
 
 Edit, save, refresh the browser. That's it.

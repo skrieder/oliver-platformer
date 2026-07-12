@@ -83,6 +83,8 @@ const sfx = {
   bounce: () => beep(260, 0.15, "triangle", 0.18, 520),
   splash: () => beep(300, 0.3, "sine", 0.12, 80),
   win: () => { [523, 659, 784, 1047].forEach((f, i) => setTimeout(() => beep(f, 0.22, "square", 0.14), i * 130)); },
+  power: () => { [392, 523, 659, 784, 1047].forEach((f, i) => setTimeout(() => beep(f, 0.1, "square", 0.14), i * 60)); },
+  super: () => { [1047, 1319, 1568, 2093].forEach((f, i) => setTimeout(() => beep(f, 0.12, "sine", 0.16), i * 55)); },
 };
 
 // ---------- Level parsing ----------
@@ -92,6 +94,7 @@ function parseLevel(def) {
   const items = [];
   const springs = [];
   const turtles = [];
+  const powerups = [];
   let flag = null;
   let start = { x: 2 * TILE, y: 2 * TILE };
   const cols = Math.max(...rows.map(r => r.length));
@@ -104,6 +107,7 @@ function parseLevel(def) {
       if (ch === "#") solids[r][c] = 2;
       else if (ch === "=") solids[r][c] = 1;
       else if (ch === "o") items.push({ x: x + TILE / 2, y: y + TILE / 2, got: false });
+      else if (ch === "!") powerups.push({ x: x + TILE / 2, y: y + TILE / 2, got: false });
       else if (ch === "^") springs.push({ x, y });
       else if (ch === "T") turtles.push({ x: x + TILE / 2, y: y + TILE - 14, dir: 1, baseX: x + TILE / 2, squish: 0 });
       else if (ch === "F") flag = { x: x + TILE / 2, y: y + TILE };
@@ -126,7 +130,8 @@ function parseLevel(def) {
   }
 
   return {
-    name: def.name, sky: def.sky, solids, items, springs, turtles, flag, start,
+    name: def.name, sky: def.sky, solids, items, springs, turtles, powerups, flag, start,
+    superCount: 0,
     rows: rows.length, cols, width: cols * TILE, height: rows.length * TILE,
   };
 }
@@ -146,13 +151,16 @@ function spawnPlayer() {
     onGround: false,
     coyote: 0,
     airJumps: 0,
+    power: 0,            // powerup frames remaining
     flash: FEEL.respawnFlash / 2,
   };
 }
 
 function respawn() {
   sfx.splash();
+  const keepPower = player ? player.power : 0;   // don't lose your powerup!
   spawnPlayer();
+  player.power = keepPower;
   player.flash = FEEL.respawnFlash;
   camX = Math.max(0, Math.min(player.x - W / 3, level.width - W));
 }
@@ -174,7 +182,10 @@ function startLevel(i) {
 function updateHud() {
   const got = level.items.filter(i => i.got).length;
   document.getElementById("hud-level").textContent = `${level.name}  (${levelIndex + 1}/${LEVELS.length})`;
-  document.getElementById("hud-score").textContent = `${itemEmoji()} ${got}/${level.items.length}`;
+  let score = `${itemEmoji()} ${got}/${level.items.length}`;
+  if (level.superCount > 0) score += `   💎x${level.superCount}`;
+  if (player && player.power > 0) score += `   ⚡${Math.ceil(player.power / 60)}`;
+  document.getElementById("hud-score").textContent = score;
 }
 
 function itemEmoji() {
@@ -185,23 +196,32 @@ function itemEmoji() {
 function updatePlayer() {
   const p = player;
 
+  // Powerup makes you play better: faster runs, higher jumps!
+  const powered = p.power > 0;
+  if (powered) {
+    p.power--;
+    if (p.power === 0) updateHud();   // clear the ⚡ from the HUD when it runs out
+  }
+  const runSpeed = hero.speed * (powered ? POWERUP.speedBoost : 1);
+  const jumpPower = hero.jumpPower * (powered ? POWERUP.jumpBoost : 1);
+
   // Run
   const accel = 0.7;
-  if (keys.left) { p.vx = Math.max(p.vx - accel, -hero.speed); p.facing = -1; }
-  else if (keys.right) { p.vx = Math.min(p.vx + accel, hero.speed); p.facing = 1; }
+  if (keys.left) { p.vx = Math.max(p.vx - accel, -runSpeed); p.facing = -1; }
+  else if (keys.right) { p.vx = Math.min(p.vx + accel, runSpeed); p.facing = 1; }
   else p.vx *= 0.75;
   if (Math.abs(p.vx) < 0.05) p.vx = 0;
 
   // Jump (with buffer + coyote time = very forgiving)
   if (jumpBuffered > 0) {
     if (p.onGround || p.coyote > 0) {
-      p.vy = -hero.jumpPower;
+      p.vy = -jumpPower;
       p.onGround = false;
       p.coyote = 0;
       jumpBuffered = 0;
       sfx.jump();
     } else if (hero.doubleJump && p.airJumps > 0) {
-      p.vy = -hero.jumpPower * 0.95;
+      p.vy = -jumpPower * 0.95;
       p.airJumps--;
       jumpBuffered = 0;
       sfx.double();
@@ -281,14 +301,43 @@ function updatePlayer() {
     }
   }
 
-  // Collectibles
+  // Powerups! ⚡
+  for (const pu of level.powerups) {
+    if (!pu.got && Math.abs(p.x + p.w / 2 - pu.x) < 36 && Math.abs(p.y + p.h / 2 - pu.y) < 38) {
+      pu.got = true;
+      p.power = POWERUP.duration;
+      sfx.power();
+      burst(pu.x, pu.y, "#ffd700", 14);
+      burst(pu.x, pu.y, "#00e5ff", 10);
+      updateHud();
+    }
+  }
+
+  // Collectibles — SUPER DIAMONDS if you're powered up!
   for (const it of level.items) {
     if (!it.got && Math.abs(p.x + p.w / 2 - it.x) < 34 && Math.abs(p.y + p.h / 2 - it.y) < 36) {
       it.got = true;
-      sfx.collect();
-      burst(it.x, it.y, "#ffd700", 12);
+      if (p.power > 0) {
+        level.superCount++;
+        sfx.super();
+        // rainbow mega-burst for a super diamond!
+        for (let i = 0; i < 5; i++) burst(it.x, it.y, `hsl(${i * 72}, 90%, 60%)`, 8);
+      } else {
+        sfx.collect();
+        burst(it.x, it.y, "#ffd700", 12);
+      }
       updateHud();
     }
+  }
+
+  // Rainbow sparkle trail while powered up
+  if (p.power > 0 && frame % 3 === 0) {
+    sparkles.push({
+      x: p.x + p.w / 2 + (Math.random() - 0.5) * 20,
+      y: p.y + p.h - Math.random() * 20,
+      vx: (Math.random() - 0.5) * 1.5, vy: -0.5,
+      life: 22, color: `hsl(${(frame * 9) % 360}, 90%, 65%)`,
+    });
   }
 
   // Fell in water? No problem — pop right back!
@@ -341,7 +390,8 @@ function showWinScreen() {
   const last = levelIndex === LEVELS.length - 1;
   document.getElementById("win-title").textContent = last ? "🏆 YOU BEAT THE WHOLE GAME! 🏆" : "YOU DID IT!";
   document.getElementById("win-stars").textContent = "⭐".repeat(stars) + "☆".repeat(3 - stars) +
-    ` ${itemEmoji()} ${got}/${total}`;
+    ` ${itemEmoji()} ${got}/${total}` +
+    (level.superCount > 0 ? `  💎x${level.superCount} SUPER!` : "");
   document.getElementById("next-btn").textContent = last ? "Play Again 🔁" : "Next Level ➡️";
   document.getElementById("win-screen").classList.remove("hidden");
 }
@@ -447,17 +497,44 @@ function drawTiles() {
 const offY = () => level.height - H;   // level is bottom-aligned to canvas
 
 function drawItems() {
+  // While powered up, treats become SUPER DIAMONDS! 💎
+  const powered = player && player.power > 0;
+  const emoji = powered ? "💎" : itemEmoji();
   for (const it of level.items) {
     if (it.got) continue;
     const x = it.x - camX, y = it.y - offY() + Math.sin(frame / 12 + it.x) * 5;
     ctx.save();
     ctx.translate(x, y);
-    ctx.shadowColor = "#fff";
-    ctx.shadowBlur = 12;
+    ctx.shadowColor = powered ? `hsl(${(frame * 6) % 360}, 90%, 60%)` : "#fff";
+    ctx.shadowBlur = powered ? 20 : 12;
     ctx.font = "30px serif";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.fillText(itemEmoji(), 0, 0);
+    ctx.fillText(emoji, 0, 0);
+    ctx.restore();
+  }
+}
+
+function drawPowerups() {
+  for (const pu of level.powerups) {
+    if (pu.got) continue;
+    const x = pu.x - camX, y = pu.y - offY() + Math.sin(frame / 10 + pu.x) * 6;
+    const pulse = 1 + Math.sin(frame / 6) * 0.15;
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(pulse, pulse);
+    // glowing ring
+    ctx.strokeStyle = `hsl(${(frame * 4) % 360}, 90%, 60%)`;
+    ctx.lineWidth = 3;
+    ctx.globalAlpha = 0.7;
+    ctx.beginPath(); ctx.arc(0, 0, 22, 0, Math.PI * 2); ctx.stroke();
+    ctx.globalAlpha = 1;
+    ctx.shadowColor = "#ffd700";
+    ctx.shadowBlur = 18;
+    ctx.font = "28px serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("⚡", 0, 0);
     ctx.restore();
   }
 }
@@ -644,6 +721,16 @@ function drawPlayer() {
   if (p.flash > 0 && Math.floor(p.flash / 4) % 2 === 0) return;  // blink on respawn
   ctx.save();
   ctx.translate(p.x + p.w / 2 - camX, p.y + p.h / 2 - offY() + 2);
+  // Rainbow power aura (blinks when it's about to run out)
+  if (p.power > 0 && !(p.power < 120 && Math.floor(p.power / 8) % 2 === 0)) {
+    ctx.save();
+    ctx.globalAlpha = 0.35;
+    ctx.fillStyle = `hsl(${(frame * 7) % 360}, 90%, 60%)`;
+    ctx.beginPath();
+    ctx.arc(0, 0, 34 + Math.sin(frame / 5) * 4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
   drawHero(ctx, hero.style, hero.colors, {
     facing: p.facing,
     run: Math.abs(p.vx) > 0.5 && p.onGround ? frame / 4 : 0,
@@ -717,6 +804,8 @@ function tick() {
     animatePreviews();
   } else if (mode === "play" || mode === "winpause") {
     if (mode === "play") updatePlayer();
+    // keep the ⚡ countdown in the HUD ticking
+    if (mode === "play" && player.power > 0 && frame % 15 === 0) updateHud();
     updateTurtles();
     updateParticles();
     if (mode === "winpause" && --winTimer <= 0) {
@@ -726,6 +815,7 @@ function tick() {
     drawBackground();
     drawTiles();
     drawSprings();
+    drawPowerups();
     drawItems();
     drawTurtles();
     drawFlag();
@@ -736,6 +826,7 @@ function tick() {
     drawBackground();
     drawTiles();
     drawSprings();
+    drawPowerups();
     drawItems();
     drawTurtles();
     drawFlag();
@@ -758,8 +849,10 @@ window.__step = (n = 1) => { for (let i = 0; i < n; i++) tick(); };
 // Debug peek (used for automated testing; harmless to leave in)
 window.__peek = () => ({
   mode, levelIndex,
-  player: player ? { x: Math.round(player.x), y: Math.round(player.y), vx: +player.vx.toFixed(1), vy: +player.vy.toFixed(1), onGround: player.onGround } : null,
+  player: player ? { x: Math.round(player.x), y: Math.round(player.y), vx: +player.vx.toFixed(1), vy: +player.vy.toFixed(1), onGround: player.onGround, power: player.power } : null,
   keys: { ...keys },
   got: level ? level.items.filter(i => i.got).length : 0,
+  superCount: level ? level.superCount : 0,
+  powerupsLeft: level ? level.powerups.filter(p => !p.got).length : 0,
 });
 })();
