@@ -189,7 +189,7 @@ function updateHud() {
 }
 
 function itemEmoji() {
-  return { bone: "🦴", star: "⭐", gem: "💎" }[hero.collectible] || "⭐";
+  return { bone: "🦴", star: "⭐", gem: "💎", hedgehog: "🦔" }[hero.collectible] || "⭐";
 }
 
 // ---------- Physics ----------
@@ -667,6 +667,58 @@ function drawHero(c, style, colors, opts) {
     c.beginPath(); c.moveTo(-7, 0); c.lineTo(7, 0); c.stroke();
     c.beginPath(); c.moveTo(-6, 6); c.lineTo(6, -4); c.stroke();
     c.beginPath(); c.moveTo(-6, -4); c.lineTo(6, 6); c.stroke();
+  }
+
+  if (style === "hedgehog") {
+    if (jumping) {
+      // Curls into a speedy spin-ball in the air!
+      const spin = Date.now() / 40;
+      c.save();
+      c.rotate(spin % (Math.PI * 2));
+      c.fillStyle = colors.body;
+      c.beginPath(); c.arc(0, 0, 15, 0, Math.PI * 2); c.fill();
+      // spikes all around
+      for (let i = 0; i < 8; i++) {
+        c.save();
+        c.rotate((Math.PI * 2 * i) / 8);
+        c.beginPath(); c.moveTo(12, -5); c.lineTo(21, 0); c.lineTo(12, 5); c.closePath(); c.fill();
+        c.restore();
+      }
+      c.fillStyle = colors.belly;
+      c.beginPath(); c.arc(0, 0, 7, 0, Math.PI * 2); c.fill();
+      c.restore();
+    } else {
+      // back spikes (swept back for speed!)
+      c.fillStyle = colors.body;
+      for (const [sx, sy] of [[-8, -18], [-12, -10], [-14, -2], [-13, 6]]) {
+        c.beginPath(); c.moveTo(sx, sy); c.lineTo(sx - 12, sy + 3); c.lineTo(sx + 2, sy + 8); c.closePath(); c.fill();
+      }
+      // body
+      c.beginPath(); c.ellipse(0, 0, 14, 16, 0, 0, Math.PI * 2); c.fill();
+      // tummy
+      c.fillStyle = colors.belly;
+      c.beginPath(); c.ellipse(4, 6, 8, 9, 0, 0, Math.PI * 2); c.fill();
+      // face patch + ear
+      c.beginPath(); c.ellipse(7, -8, 7, 6, 0, 0, Math.PI * 2); c.fill();
+      c.fillStyle = colors.body;
+      c.beginPath(); c.moveTo(2, -16); c.lineTo(6, -24); c.lineTo(10, -15); c.closePath(); c.fill();
+      // big eye + nose + smile
+      c.fillStyle = "#fff";
+      c.beginPath(); c.ellipse(8, -9, 4, 5, 0, 0, Math.PI * 2); c.fill();
+      c.fillStyle = "#222";
+      c.beginPath(); c.arc(10, -9, 2, 0, Math.PI * 2); c.fill();
+      c.beginPath(); c.arc(15, -4, 2, 0, Math.PI * 2); c.fill();
+      c.strokeStyle = "#222"; c.lineWidth = 1.2;
+      c.beginPath(); c.arc(10, -2, 3.5, 0.4, Math.PI - 0.9); c.stroke();
+      // speedy red shoes
+      c.fillStyle = colors.accent;
+      const lr = Math.sin(run * 2) * 6;
+      c.beginPath(); c.roundRect(-9 + lr, 15, 12, 7, 3); c.fill();
+      c.beginPath(); c.roundRect(-1 - lr, 15, 12, 7, 3); c.fill();
+      c.fillStyle = colors.badge;
+      c.fillRect(-7 + lr, 17, 8, 2);
+      c.fillRect(1 - lr, 17, 8, 2);
+    }
   }
 
   if (style === "wizard") {

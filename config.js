@@ -45,6 +45,23 @@ const HEROES = [
     collectibleName: "stars",
   },
   {
+    id: "zoom",
+    name: "Zoom the Hedgehog",
+    tagline: "The fastest hero ever — zoom zoom!",
+    style: "hedgehog",
+    colors: {
+      body: "#2563eb",         // blue spikes
+      belly: "#f6d7b0",        // tan tummy & face
+      accent: "#e3350d",       // speedy red shoes
+      badge: "#ffffff",
+    },
+    speed: 5.4,                // fastest in the game!
+    jumpPower: 12.5,
+    doubleJump: false,
+    collectible: "hedgehog",   // collects tiny hedgehog friends!
+    collectibleName: "hedgehogs",
+  },
+  {
     id: "arthur",
     name: "Art the Apprentice",
     tagline: "A young wizard with a magic sword!",

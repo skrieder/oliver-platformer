@@ -16,6 +16,7 @@ at the link above — or download this folder and **double-click `index.html`**.
 |------|-------------|---------|
 | Rusty the Rescue Pup | rescue-puppy shows | Well-rounded and brave |
 | Webby the Spider Kid | friendly spider heroes | **Double jump** (press jump again in the air!) |
+| Zoom the Hedgehog | speedy blue heroes | **Fastest runner**, spin-ball jumps, collects tiny hedgehogs 🦔 |
 | Art the Apprentice | young-wizard tales | Highest jump, holds his sword up |
 
 ## Changing the game (the fun part!)
